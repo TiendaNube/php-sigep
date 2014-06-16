@@ -13,15 +13,16 @@ class AccessDataHomologacao extends AccessData
     {
         parent::__construct(
             array(
-                'codAdministrativo' => '08082650',
                 'usuario'           => 'sigep',
                 'senha'             => '***REMOVED***',
-                'cartaoPostagem'    => '0057018901',
+                'codAdministrativo' => '08082650',
                 'numeroContrato'    => '9912208555',
+                'cartaoPostagem'    => '0057018901',
                 'cnpjEmpresa'       => null, // Não consta no manual.
                 'anoContrato'       => null, // Não consta no manual.
-                'diretoria'         => null, // Não consta no manual.
+                'diretoria'         => new Diretoria(Diretoria::DIRETORIA_DR_RIO_DE_JANEIRO), // Não consta no manual, mas precisamos setar um valor para conseguir imprimir as etiquetas.
             )
         );
+        try {\PhpSigep\Bootstrap::getConfig()->setEnv(\PhpSigep\Config::ENV_DEVELOPMENT);} catch (\Exception $e) {}
     }
 }
