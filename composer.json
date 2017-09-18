@@ -1,6 +1,5 @@
 {
     "name": "TiendaNube/php-sigep",
-    "version": "0.0.1",
     "type": "library",
     "description": "Integração com Web Service do Correios. Gera etiquetas, consulta preços e prazos, imprime etiquetas e PLP, etc.",
     "keywords": ["correios", "sigep"],
@@ -11,8 +10,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0",
-            "dev-develop": "1.0"
+            "dev-master": "1.0-dev",
+            "dev-develop": "1.1-dev"
         }
     },
     "require": {
@@ -25,7 +24,7 @@
     "require-dev": {
         "phpstan/phpstan": "^0.12.81",
         "phpunit/phpunit": "~4",
-        "TiendaNube/php-sigep-fpdf": "1.0"
+        "TiendaNube/php-sigep-fpdf": "dev-master"
     },
     "autoload": {
         "psr-0": {
