@@ -17,14 +17,13 @@
     "require": {
         "php": ">=5.4",
         "ext-soap": "*",
+        "tiendanube/php-sigep-fpdf": "dev-master",
         "ext-mbstring": "*",
-        "stavarengo/php-sigep-fpdf": "dev-master",
         "vria/nodiacritic": "^0.1.2"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12.81",
-        "phpunit/phpunit": "~4",
-        "TiendaNube/php-sigep-fpdf": "dev-master"
+        "phpunit/phpunit": "~4"
     },
     "autoload": {
         "psr-0": {
