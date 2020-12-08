@@ -8,6 +8,8 @@ namespace PhpSigep\Model;
  */
 class ServicoDePostagem extends AbstractModel
 {
+    const SERVICE_MINIENVIOS_04235 = '04235';
+    const SERVICE_MINIENVIOS_04227 = '04227';
     const SERVICE_PAC_41068 = '41068';
     const SERVICE_PAC_04510 = '04510';
     const SERVICE_PAC_GRANDES_FORMATOS = '41300';
@@ -78,6 +80,8 @@ class ServicoDePostagem extends AbstractModel
             self::SERVICE_CARTA_REGISTRADA_AGENCIA_80250 => ['Carta Registrada 80250', 162142],
 
             // DEMAIS SERVICOS
+            self::SERVICE_MINIENVIOS_04235                           => array('Mini 04235', 159982),
+            self::SERVICE_MINIENVIOS_04227                           => array('Mini 04227', 159982),
             self::SERVICE_PAC_41068                                  => array('Pac 41068', 109819),
             self::SERVICE_PAC_04510                                  => array('Pac 04510', 124887),
             self::SERVICE_PAC_GRANDES_FORMATOS                       => array('Pac Grandes Formatos', 120366),
