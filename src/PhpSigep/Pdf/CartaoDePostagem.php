@@ -738,5 +738,5 @@ class CartaoDePostagem
         $this->envioMesmoDestinatario = $envioMesmoDestinatario;
         return $this;
     }
-
+    
 }
