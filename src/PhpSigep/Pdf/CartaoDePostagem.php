@@ -263,6 +263,7 @@ class CartaoDePostagem
                     case ServicoDePostagem::SERVICE_PAC_41068:
                     case ServicoDePostagem::SERVICE_PAC_04510:
                     case ServicoDePostagem::SERVICE_PAC_CONTRATO_AGENCIA:
+                    case ServicoDePostagem::SERVICE_PAC_CONTRATO_AGENCIA_NEW_CONTRACT:
                     case ServicoDePostagem::SERVICE_PAC_GRANDES_FORMATOS:
                     case ServicoDePostagem::SERVICE_PAC_REVERSO_CONTRATO_AGENCIA:
                     case ServicoDePostagem::SERVICE_PAC_PAGAMENTO_NA_ENTREGA:
@@ -288,6 +289,7 @@ class CartaoDePostagem
                     case ServicoDePostagem::SERVICE_SEDEX_PAGAMENTO_NA_ENTREGA:
                     case ServicoDePostagem::SERVICE_SEDEX_AGRUPADO:
                     case ServicoDePostagem::SERVICE_SEDEX_CONTRATO_AGENCIA:
+                    case ServicoDePostagem::SERVICE_SEDEX_CONTRATO_AGENCIA_NEW_CONTRACT:
                     case ServicoDePostagem::SERVICE_SEDEX_REVERSO_CONTRATO_AGENCIA:
                     case ServicoDePostagem::SERVICE_SEDEX_CONTRATO_UO:
                     case ServicoDePostagem::SERVICE_SEDEX_CONTRATO_AGENCIA_LM:
