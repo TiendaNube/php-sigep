@@ -489,7 +489,7 @@ class CartaoDePostagem2018
 
     private function init()
     {
-        $this->pdf = new \PhpSigep\Pdf\ImprovedFPDF('P', 'mm');
+        $this->pdf = new \PhpSigep\Pdf\ImprovedFPDF('P', 'mm', array(106.36));
         $this->pdf->SetFont('Arial', '', 10);
     }
 
