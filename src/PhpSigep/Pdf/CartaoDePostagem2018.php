@@ -349,9 +349,9 @@ class CartaoDePostagem2018
                     $_siglaAdicinal[] = "VD";
                     $valorDeclarado = $servicoAdicional->getValorDeclarado();
                 } else if ($servicoAdicional->is(ServicoAdicional::SERVICE_VALOR_DECLARADO_MINI_ENVIOS)) {
-                        $sSer = $sSer . "65";
-                        $_siglaAdicinal[] = "VD";
-                        $valorDeclarado = $servicoAdicional->getValorDeclarado();
+                    $sSer = $sSer . "65";
+                    $_siglaAdicinal[] = "VD";
+                    $valorDeclarado = $servicoAdicional->getValorDeclarado();
                 } else if ($servicoAdicional->is(ServicoAdicional::SERVICE_REGISTRO)) {
                     $sSer = $sSer . "25";
                 }
@@ -405,7 +405,7 @@ class CartaoDePostagem2018
             // Observações
             $observacoes = $objetoPostal->getObservacao();
             if (!empty($observacoes)) {
-                $this->pdf->SetFontSize(9);
+                $this->pdf->SetFontSize(8);
                 $this->pdf->SetXY(55, $currentY + 1);
                 $this->multiLines(50, 'Obs: ' . $observacoes, 'L', null);
             }
@@ -623,10 +623,10 @@ class CartaoDePostagem2018
             $this->pdf->Image(realpath(dirname(__FILE__)) . '/logo-correios.png', 84, $t+1, 20, 4);
 
             // Nome da pessoa
-            $this->pdf->SetFont('', '', 11);
+            $this->pdf->SetFont('', '', 8);
             $this->setFillColor(190, 190, 190);
             $this->pdf->SetX($l + $addressPadding);
-            $this->multiLines($w, $nomeDestinatario, 'L');
+            $this->singleLine($w, $nomeDestinatario, 'L');
 
         } else {
             $addressPadding = 2;
@@ -639,22 +639,22 @@ class CartaoDePostagem2018
             // Titulo do bloco: destinatario ou remetente
             $this->pdf->SetFont('', 'B');
             $this->setFillColor(60, 60, 60);
-            $this->pdf->SetFontSize(10);
+            $this->pdf->SetFontSize(8);
             $this->pdf->SetXY(2, $t);
             $this->t($w, $titulo, 2, '');
 
             // Nome da pessoa
-            $this->pdf->SetFont('', '', 10);
+            $this->pdf->SetFont('', '', 8);
             $this->setFillColor(190, 190, 190);
             $this->pdf->SetXY(22, $t);
-            $this->multiLines($w, trim($nomeDestinatario), 'L');
+            $this->singleLine($w, trim($nomeDestinatario), 'L');
         }
 
         $w = $w - $addressPadding;
         $l = $l + $addressPadding;
 
         //Primeria parte do endereco
-        $address1 = $logradouro;
+        $address1 = substr($logradouro, 0, 45);
         $numero = $numero1;
         if (!$numero || strtolower($numero) == 'sn') {
             $address1 .= ', s/ nº';
@@ -666,13 +666,15 @@ class CartaoDePostagem2018
         }
         $this->setFillColor(100, 190, 190);
         $this->pdf->SetX($l);
-        $this->multiLines($w, $address1, 'L');
+        $this->singleLine($w, $address1, 'L');
 
         //Segunda parte do endereco
         $this->pdf->SetX($l);
 
         $this->setFillColor(100, 130, 190);
-        $this->multiLines($w, $complemento . $bairro, 'L');
+
+        $complementoBairro = substr($complemento . $bairro, 0, 190);
+        $this->multiLines($w, $complementoBairro, 'L');
 
         $this->setFillColor(100, 30, 210);
         $this->pdf->SetX($l);
@@ -709,6 +711,11 @@ class CartaoDePostagem2018
         } else {
             $this->pdf->Cell($w, $h, $txt, $border, $ln, $align, $fill);
         }
+    }
+
+    private function singleLine ($w, $txt, $align, $h = null, $utf8 = true)
+    {
+        $this->t($w, $txt, 1, $align, $h, false, $utf8);
     }
 
     private function multiLines ($w, $txt, $align, $h = null, $utf8 = true)
