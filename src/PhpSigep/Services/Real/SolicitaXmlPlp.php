@@ -54,8 +54,10 @@ class SolicitaXmlPlp
                         throw new FailedConvertToArrayException('Erro ao converter Object para Array da PLP. Retorno: "' . print_r(json_last_error_msg(), true) . '"');
                     }
                 } else {
-                    throw new FailedConvertXmlException('Erro ao converter XML da PLP. Retorno: "' . print_r(libxml_get_errors(), true) . '"');
-                }
+                    $xml = simplexml_load_string($r->return);
+                    $objectToarray = json_decode(json_encode($xml), true);
+                    $result->setResult(new SolicitaXmlPlpResult($objectToarray));
+               }
             } else {
                 throw new FailedResultException('Erro no resultado do XML da PLP. Retorno: "' . print_r($r->return, true) . '"');
             }
