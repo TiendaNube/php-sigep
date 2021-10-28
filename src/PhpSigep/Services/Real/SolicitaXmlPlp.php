@@ -1,13 +1,13 @@
 <?php
-
 namespace PhpSigep\Services\Real;
 
-use PhpSigep\Bootstrap;
 use PhpSigep\Model\SolicitaXmlPlpResult;
+use PhpSigep\Services\Exception;
+use PhpSigep\Services\Result;
+use PhpSigep\Bootstrap;
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedConvertToArrayException;
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedConvertXmlException;
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedResultException;
-use PhpSigep\Services\Result;
 
 /**
  * @author: Cristiano Soares
@@ -18,15 +18,15 @@ class SolicitaXmlPlp
     /**
      * @param integer $idPlpMaster
      *
-     * @return Result<SolicitaXmlPlpResult[]>
      * @throws \PhpSigep\Services\Exception
+     * @return Result<SolicitaXmlPlpResult[]>
      */
     public function execute($idPlpMaster)
     {
         $soapArgs = array(
-            'idPlpMaster' => $idPlpMaster,
-            'usuario' => Bootstrap::getConfig()->getAccessData()->getUsuario(),
-            'senha' => Bootstrap::getConfig()->getAccessData()->getSenha()
+            'idPlpMaster'   => $idPlpMaster,
+            'usuario'        => Bootstrap::getConfig()->getAccessData()->getUsuario(),
+            'senha'          => Bootstrap::getConfig()->getAccessData()->getSenha()
         );
 
         $result = new Result();
