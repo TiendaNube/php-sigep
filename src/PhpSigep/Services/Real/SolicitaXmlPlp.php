@@ -40,16 +40,17 @@ class SolicitaXmlPlp
 
                 throw new FailedResultException('Erro ao consultar XML da PLP. Retorno: "' . $r . '"');
             }
-
             if (is_string($r->return)) {
                 libxml_use_internal_errors(true);
-                $xmlString = iconv('utf-8', 'ISO-8859-1//IGNORE', $r->return);
-                $xml = simplexml_load_string($xmlString, \SimpleXMLElement::class, LIBXML_NOCDATA);
-                if ($xml instanceof \SimpleXMLElement) {
-                    $objectToarray = json_decode(json_encode($xml), true);
+                $formattedXmlData = $this->remove_CDATA_config($r->return);
+                $xml = simplexml_load_string($formattedXmlData, \SimpleXMLElement::class);
 
-                    if ($objectToarray) {
-                        $result->setResult(new SolicitaXmlPlpResult($objectToarray));
+                if ($xml instanceof \SimpleXMLElement) {
+                    $object = json_decode(json_encode($xml), true);
+                    $objectFormatted = $this->remove_empty_fields($object);
+
+                    if ($objectFormatted) {
+                        $result->setResult(new SolicitaXmlPlpResult($objectFormatted));
                     } else {
                         throw new FailedConvertToArrayException('Erro ao converter Object para Array da PLP. Retorno: "' . print_r(json_last_error_msg(), true) . '"');
                     }
@@ -71,5 +72,18 @@ class SolicitaXmlPlp
         }
 
         return $result;
+    }
+
+    private function remove_CDATA_config($xml) {
+        return str_replace(array('<![CDATA[', ']]]]>',']]>'), array('','',''), $xml);
+    }
+
+    private function remove_empty_fields($input){
+        foreach ($input as &$value){
+            if (is_array($value)){
+                $value = $this->remove_empty_fields($value);
+            }
+        }
+        return array_filter($input);
     }
 }
