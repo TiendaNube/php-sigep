@@ -41,9 +41,7 @@ class SolicitaXmlPlp
                 throw new FailedResultException('Erro ao consultar XML da PLP. Retorno: "' . $r . '"');
             }
             if (is_string($r->return)) {
-                libxml_use_internal_errors(true);
-                $formattedXmlData = $this->remove_CDATA_config($r->return);
-                $xml = simplexml_load_string($formattedXmlData, \SimpleXMLElement::class);
+                $xml = $this->load_xml_from_string($r->return);
 
                 if ($xml instanceof \SimpleXMLElement) {
                     $object = json_decode(json_encode($xml), true);
@@ -74,10 +72,24 @@ class SolicitaXmlPlp
         return $result;
     }
 
-    private function remove_CDATA_config($xml) {
-        return str_replace(array('<![CDATA[', ']]]]>',']]>'), array('','',''), $xml);
+    /*
+    * This function was create to solve the problem with converse some xml sended by correios.
+    * The first step is try the common flow if get error the function will try just load the xml.
+    */
+    private function load_xml_from_string($str){
+        try {
+            $xmlString = iconv('utf-8', 'ISO-8859-1//IGNORE', $str);
+            $xml = simplexml_load_string($xmlString, \SimpleXMLElement::class, LIBXML_NOCDATA);
+        } catch(\Exception $e) {
+            $xml = simplexml_load_string($str, \SimpleXMLElement::class, LIBXML_NOCDATA);
+        }
+
+        return $xml;
     }
 
+    /*
+    * This function runs recursively for all object key and remove empty values
+    */
     private function remove_empty_fields($input){
         foreach ($input as &$value){
             if (is_array($value)){
