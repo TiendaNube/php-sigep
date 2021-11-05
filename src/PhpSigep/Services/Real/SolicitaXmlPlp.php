@@ -9,6 +9,9 @@ use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedConvertToArrayExceptio
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedConvertXmlException;
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedResultException;
 
+define('UTF_8', 'utf-8');
+define ('ISO_8859_1', 'ISO-8859-1//IGNORE');
+
 /**
  * @author: Cristiano Soares
  * @link: http://comerciobr.com
@@ -41,6 +44,8 @@ class SolicitaXmlPlp
                 throw new FailedResultException('Erro ao consultar XML da PLP. Retorno: "' . $r . '"');
             }
             if (is_string($r->return)) {
+                libxml_use_internal_errors(true);
+
                 $xml = $this->load_xml_from_string($r->return);
 
                 if ($xml instanceof \SimpleXMLElement) {
@@ -72,19 +77,28 @@ class SolicitaXmlPlp
         return $result;
     }
 
+    private function convert_iso_to_utf8($str) {
+        try {
+            return iconv(UTF_8, ISO_8859_1, $str);
+        }
+        catch(\Exception $e) {
+            return $str;
+        }
+    }
+
     /*
     * This function was create to solve the problem with converse some xml sended by correios.
     * The first step is try the common flow if get error the function will try just load the xml.
     */
     private function load_xml_from_string($str){
-        try {
-            $xmlString = iconv('utf-8', 'ISO-8859-1//IGNORE', $str);
-            $xml = simplexml_load_string($xmlString, \SimpleXMLElement::class, LIBXML_NOCDATA);
-        } catch(\Exception $e) {
-            $xml = simplexml_load_string($str, \SimpleXMLElement::class, LIBXML_NOCDATA);
+        $xmlString = $this->convert_iso_to_utf8($str);
+        $xml = simplexml_load_string($xmlString, \SimpleXMLElement::class, LIBXML_NOCDATA);
+
+        if($xml){
+          return $xml;
         }
 
-        return $xml;
+        return simplexml_load_string($str, \SimpleXMLElement::class, LIBXML_NOCDATA);
     }
 
     /*
