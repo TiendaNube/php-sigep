@@ -9,6 +9,9 @@ use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedConvertToArrayExceptio
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedConvertXmlException;
 use PhpSigep\Services\Real\Exception\SolicitaXmlPlp\FailedResultException;
 
+define('UTF_8', 'utf-8');
+define ('ISO_8859_1', 'ISO-8859-1//IGNORE');
+
 /**
  * @author: Cristiano Soares
  * @link: http://comerciobr.com
@@ -40,16 +43,17 @@ class SolicitaXmlPlp
 
                 throw new FailedResultException('Erro ao consultar XML da PLP. Retorno: "' . $r . '"');
             }
-
             if (is_string($r->return)) {
                 libxml_use_internal_errors(true);
-                $xmlString = iconv('utf-8', 'ISO-8859-1//IGNORE', $r->return);
-                $xml = simplexml_load_string($xmlString, \SimpleXMLElement::class, LIBXML_NOCDATA);
-                if ($xml instanceof \SimpleXMLElement) {
-                    $objectToarray = json_decode(json_encode($xml), true);
 
-                    if ($objectToarray) {
-                        $result->setResult(new SolicitaXmlPlpResult($objectToarray));
+                $xml = $this->load_xml_from_string($r->return);
+
+                if ($xml instanceof \SimpleXMLElement) {
+                    $object = json_decode(json_encode($xml), true);
+                    $objectFormatted = $this->remove_empty_fields($object);
+
+                    if ($objectFormatted) {
+                        $result->setResult(new SolicitaXmlPlpResult($objectFormatted));
                     } else {
                         throw new FailedConvertToArrayException('Erro ao converter Object para Array da PLP. Retorno: "' . print_r(json_last_error_msg(), true) . '"');
                     }
@@ -71,5 +75,41 @@ class SolicitaXmlPlp
         }
 
         return $result;
+    }
+
+    private function convert_iso_to_utf8($str) {
+        try {
+            return iconv(UTF_8, ISO_8859_1, $str);
+        }
+        catch(\Exception $e) {
+            return $str;
+        }
+    }
+
+    /*
+    * This function was create to solve the problem with converse some xml sended by correios.
+    * The first step is try the common flow if get error the function will try just load the xml.
+    */
+    private function load_xml_from_string($str){
+        $xmlString = $this->convert_iso_to_utf8($str);
+        $xml = simplexml_load_string($xmlString, \SimpleXMLElement::class, LIBXML_NOCDATA);
+
+        if($xml){
+          return $xml;
+        }
+
+        return simplexml_load_string($str, \SimpleXMLElement::class, LIBXML_NOCDATA);
+    }
+
+    /*
+    * This function runs recursively for all object key and remove empty values
+    */
+    private function remove_empty_fields($input){
+        foreach ($input as &$value){
+            if (is_array($value)){
+                $value = $this->remove_empty_fields($value);
+            }
+        }
+        return array_filter($input);
     }
 }
